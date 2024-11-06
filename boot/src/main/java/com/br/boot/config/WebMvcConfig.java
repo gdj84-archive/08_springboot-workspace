@@ -1,11 +1,19 @@
 package com.br.boot.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.br.boot.interceptor.LoginCheckInterceptor;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+	
+	private final LoginCheckInterceptor loginCheckInterceptor;
 	
 	/*
 	 * * WebMvcConfigurer 
@@ -20,7 +28,24 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// <resources mapping="/resources/**" location="classpath:/static/" />
 		registry.addResourceHandler("/resources/**")
-				.addResourceLocations("classpath:/static/");		
+				.addResourceLocations("classpath:/static/");	
+		
+		registry.addResourceHandler("/upload/**")
+				.addResourceLocations("file:///upload/");
+	}
+	
+	public void addInterceptors(InterceptorRegistry registry) {
+		/*
+		<interceptor>
+			<mapping path="/member/myinfo.do" />
+			<mapping path="/board/regist.do" />
+			<beans:bean class="com.br.spring.interceptor.LoginCheckInterceptor" id="loginCheckInterceptor"/>
+		</interceptor>
+		*/
+		
+		registry.addInterceptor(loginCheckInterceptor)
+				.addPathPatterns("/member/myinfo.do")
+				.addPathPatterns("/board/regist.do");
 		
 	}
 

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper	namespace="memberMapper">
+
+	<resultMap id="memberResultMap" type="MemberDto">
+		<result column="user_no" property="userNo" />
+		<result column="user_id" property="userId" />
+		<result column="user_pwd" property="userPwd" />
+		<result column="user_name" property="userName" />
+		<result column="email" property="email" />
+		<result column="gender" property="gender" />
+		<result column="phone" property="phone" />
+		<result column="address" property="address" />
+		<result column="profile_url" property="profileURL" />
+		<result column="signup_date" property="signupDt" />
+		<result column="modify_date" property="modifyDt" />
+		<result column="status" property="status" />
+	</resultMap>
+
+	<!-- 로그인 -->
+	<select id="selectMember" resultMap="memberResultMap">
+		<!-- 
+		select
+					 user_no
+				 , user_id
+				 , user_pwd
+				 , user_name
+				 , email
+				 , gender
+				 , phone
+				 , address
+				 , profile_url
+				 , signup_date
+				 , modify_date
+				 , status
+			from member
+		 where status in ('Y', 'A')
+		   and user_id = #{userId}
+		   and user_pwd = #{userPwd}
+		 -->
+		 
+		select
+					 user_no
+				 , user_id
+				 , user_pwd
+				 , user_name
+				 , email
+				 , gender
+				 , phone
+				 , address
+				 , profile_url
+				 , signup_date
+				 , modify_date
+				 , status
+			from member
+		 where status in ('Y', 'A')
+		   and user_id = #{userId}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="insertMember">
+		insert
+		  into member
+		  (
+		    user_no
+		  , user_id
+		  , user_pwd
+		  , user_name
+		  , email
+		  , gender
+		  , phone
+		  , address
+		  )
+		  values
+		  (
+		    seq_uno.nextval
+		  , #{userId}
+		  , #{userPwd}
+		  , #{userName}
+		  , #{email}
+		  , #{gender}
+		  , #{phone}
+		  , #{address}
+		  )
+	</insert>
+	
+	<!-- 아이디중복체크 (아이디 수 조회) -->
+	<select id="selectUserIdCount" resultType="_int">
+		select
+		       count(*)
+		  from member
+		 where user_id = #{checkId}
+	</select>
+	
+	<!-- 회원정보수정 -->
+	<update id="updateMember">
+		update
+					 member
+			 set user_name = #{userName}
+			   , email = #{email}
+			   , phone = #{phone}
+			   , address = #{address}
+			   , gender = #{gender}
+			   , modify_date = sysdate
+		 where user_id = #{userId}
+	</update>
+	
+	<!-- 회원프로필이미지 수정 -->
+	<update id="updateProfileImg">
+		update
+					 member
+			 set profile_url = #{profileURL}
+			   , modify_date = sysdate
+		 where user_no = #{userNo}
+	</update>
+	
+	<!-- 회원탈퇴 (행을 삭제하진 않고 개인정보만 일부지움(이름만 마스킹처리) -->
+	<update id="deleteMember">
+		update
+					 member
+			 set email = null
+			   , gender = null
+			   , phone = null
+			   , address = null
+			   , profile_url = null
+			   , user_name = substr(user_name, 1, 1) || rpad('*', length(user_name)-1, '*')
+			   , status = 'N'
+			   , modify_date = sysdate
+		 where user_id = #{userId}
+	</update>
+
+
+
+
+
+
+
+
+</mapper>

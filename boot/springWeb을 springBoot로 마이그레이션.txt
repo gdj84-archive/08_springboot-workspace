@@ -103,7 +103,7 @@
      2) WebMvcConfigurer를 구현한 클래스로 만들기 : implements WebMvcConfigurer 
      3) addResourceHandlers 메소드 오버라이딩 후 아래 내용 참고해서 작성
          registry.addResourceHandler("mapping값")
-     						   .addResourceLocations("location값")
+     						 .addResourceLocations("location값")
 
   3. server start 해서 
      localhost:8888  url 요청시 main 페이지 잘 뜨는지 
@@ -117,14 +117,63 @@
 
 ---------------------------------------------------------------
 
-* migration 작업 - 
+* migration 작업 - BCryptPasswordEncoder 빈 등록
+ 
+  1. 라이브러리 등록 : pom.xml
+     <dependency>
+			  <groupId>org.springframework.security</groupId>
+			  <artifactId>spring-security-core</artifactId>
+		 </dependency>
+		 
+	2. BCryptPasswordEncoder 빈 등록 
+	   1) Spring Security 설정 관련 클래스 만들기 : com.br.boot.config.SecurityConfig
+	   2) 해당 클래스에 @Configuration 작성
+	   3) @Bean 으로 BCryptPasswordEncoder 빈 등록
 
 
 ---------------------------------------------------------------
 
-* migration 작업 - 
+* migration 작업 - MyBatis, logback, log4jdbc
 
+  1. OrcleDriver, MyBatis starter 라이브러리 등록
+     1) 프로젝트 우클릭 > Spring > Add Starters 선택후 dependency 선택
+        ㄴ Oracle Driver (SQL 안)
+        ㄴ MyBatis Framework (SQL 안)
+        
+  2. mybatis 기존 mapper 파일 가져다 두기 : src/main/resources/mybatis/mappers/
+  
+  3. db 연결 정보 등록 : application.properties
+     spring.datasource.driver-class-name=net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+		 spring.datasource.url=jdbc:log4jdbc:oracle:thin:@localhost:1521:xe
+		 spring.datasource.username=spring
+		 spring.datasource.password=spring
+		 
+	4. mybatis 관련 구문 등록 : application.properties
+	   mybatis.mapper-locations=mybatis/mappers/*.xml
+		 mybatis.type-aliases-package=com.br.boot.dto
+		 mybatis.configuration.jdbc-type-for-null=NULL
+		 
+	5. log4jdbc 라이브러리 추가 : pom.xml
+	   <dependency>
+			  <groupId>org.bgee.log4jdbc-log4j2</groupId>
+			  <artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
+			  <version>1.16</version>
+		 </dependency>
+		 
+	6. logback, log4jdbc 기존 파일 복사해오기 : src/main/resources/
+	   logback.xml 파일 패키지 수정 
+     
 ---------------------------------------------------------------
+
+* migration 작업 - 파일업로드 (별도의 라이브러리 등록 필요 없음)
+
+  1. MultipartResolver 관련 등록 구문 :  application.properties
+     spring.servlet.multipart.max-file-size=10MB
+		 spring.servlet.multipart.max-request-size=100MB
+		 
+	2. FileUtil 클래스에 fileupload 메소드 안에 업로드 폴더 경로 수정 
+	
+	   File filePathDir = new File("C:" + filePath);
 
 ---------------------------------------------------------------
 
