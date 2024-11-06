@@ -44,7 +44,7 @@ header .profile-img{width:30px;}
 
 <header class="row m-3">
 	<div class="col-3 d-flex justify-content-center align-items-center">
-	    <a href="${ contextPath }"><img src="${ contextPath }/resources/images/goodee_logo.png" width="100px"></a>
+	    <a href="${ contextPath == '' ? '/' : contextPath }"><img src="${ contextPath }/resources/images/goodee_logo.png" width="100px"></a>
 	</div>
 	<div class="col-5"></div>
 	<div class="col-4 d-flex justify-content-center align-items-center">
@@ -70,7 +70,7 @@ header .profile-img{width:30px;}
 <nav class="navbar m-3 navbar-expand-sm bg-dark navbar-dark d-flex justify-content-center">
 <ul class="navbar-nav">
     <li class="nav-item">
-    <a class="nav-link" href="${ contextPath }">Home</a>
+    <a class="nav-link" href="${ contextPath == '' ? '/' : contextPath }">Home</a>
     </li>
     <li class="nav-item">
     <a class="nav-link" href="#">공지사항</a>

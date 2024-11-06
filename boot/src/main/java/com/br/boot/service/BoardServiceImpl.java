@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.br.boot.dao.BoardDao;
 import com.br.boot.dto.AttachDto;
@@ -40,6 +41,7 @@ public class BoardServiceImpl implements BoardService {
 		return boardDao.selectSearchList(search, pi);
 	}
 
+	@Transactional
 	@Override
 	public int insertBoard(BoardDto b) {
 		
@@ -87,6 +89,7 @@ public class BoardServiceImpl implements BoardService {
 								 : boardDao.selectDelAttach(delFileNo);
 	}
 
+	@Transactional
 	@Override
 	public int updateBoard(BoardDto b, String[] delFileNo) {
 		
