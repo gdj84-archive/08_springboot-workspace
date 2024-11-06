@@ -177,10 +177,58 @@
 
 ---------------------------------------------------------------
 
+* migration 작업 - Interceptor
 
+  1. 기존 프로젝트의 interceptor 클래스 복사
+  
+  2. 해당 interceptor 클래스 빈으로 등록 (@Component)
+  
+  3. 인터셉터 등록 : WebMvcConfig
+     1) Interceptor 객체 DI
+     2) addInterceptors 메소드 오버라이딩 후 아래 내용 작성 
+        registry.addInterceptor(실행시킬Interceptor객체)
+								.addPathPatterns("url mapping값")
+								.addPathPatterns("url mapping값");
+								
+	4. contextPath 이슈
+	   - Interceptor 클래스에 contextPath로 리다렉트 구문 작성시 
+	     contextPath가 빈 문자열일 경우 이슈 발생 (제대로 redirect 되지 않음)
+	     => response.sendRedirect(request.getContextPath().equals("") ? "/"
+																	  																: request.getContextPath());  로 수정
+        
+---------------------------------------------------------------
 
+* migration 작업 - Scheduler
 
+  1. 기존 프로젝트에서 Scheduler 클래스 복사
+  
+  2. 해당 클래스 빈으로 등록 (@Component)
+  
+  3. 스케줄링 활성화 : com.br.boot.BootApplication
+     @EnableScheduling 추가 
+     
+---------------------------------------------------------------
 
+* migration 작업 - WebSocket
+
+  1. 라이브러리 등록 
+     1) 프로젝트 우클릭 > Spring > Add Starters 
+     2) WebSocket (Messaging 안) dependency 추가 
+     
+  2. 기존 프로젝트 EchoHandler 클래스 복사
+  
+  3. 해당 클래스 빈 등록 (@Component)
+  
+  4. websocket 핸들러 등록 
+     1) websocket 설정을 위한 클래스 만들기 : com.br.boot.config.WebSocketConfig
+     2) WebSocketConfigurer 구현 클래스로 만들기 : implements WebSocketConfigurer
+     3) EchoHandler 객체 DI
+     4) HttpSessionHandshakeInterceptor 빈으로 등록 
+     5) registerWebSocketHandlers 오버라이딩 한 후 하단 구문 작성 
+        registry.addHandler(구동시킬EchoHandler객체, "웹소켓연결을위한url")
+								.addInterceptors(httpSessionHandshakeInterceptor())
+								.withSockJS();
+  
 
 
 
